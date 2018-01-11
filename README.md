@@ -1,3 +1,9 @@
+Notes
+--------
+* https://console.developers.google.com
+* https://mobius.network/store/developer
+* https://mobius.network/docs/?python#app-store
+
 Install
 --------
 * https://cloud.google.com/appengine/docs/standard/python/tools/using-libraries-python-27
