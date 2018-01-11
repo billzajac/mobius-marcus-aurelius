@@ -19,29 +19,46 @@ import config
 from pymobius import Mobius
 import json
 
+# This will fix the pymobius requestor
+import requests
+import requests_toolbelt.adapters.appengine
+# Use the App Engine Requests adapter. This makes sure that Requests uses
+# URLFetch.
+requests_toolbelt.adapters.appengine.monkeypatch()
+
 class MainPage(webapp2.RequestHandler):
     def get(self):
         # Init the mobius object
         mobius = Mobius(api_key=config.api_key)
 
         # Get the user's email and the api-key
-        email = self.request.get_all("email")
-        request_api_key = self.request.get_all("api_key")
+        request_email = self.request.get_all("email")[0]
+        request_api_key = self.request.get_all("api_key")[0]
+        #request_email = self.request.get_all("email")[0].encode("utf-8")
+        #request_api_key = self.request.get_all("api_key")[0].encode("utf-8")
 
         # Prep the response
         self.response.headers['Content-Type'] = 'text/plain'
 
         # Validate the api-key
         if (request_api_key == config.api_key):
-            self.response.write("Invalid API Key")
 
-        resp_json = mobius.app_store.use(app_uid=config.uid, email=email, num_credits=1)
-        resp = json.loads(resp_json)
+            resp = mobius.app_store.use(app_uid=config.uid, email=request_email, num_credits=1)
+            #resp = mobius.app_store.balance(app_uid=config.uid, email=request_email)
 
-        if resp["success"]:
-            self.response.write(random.choice(meditations.quotes))
+            quote = "Not enough tokens"
+
+            if resp["success"]:
+                quote = random.choice(meditations.quotes)
+
+            to_write = {
+                    "quote": quote,
+                    "num_credits": resp["num_credits"]
+                    }
+
+            self.response.write(json.dumps(to_write))
         else:
-            self.response.write("Not enough tokens")
+            self.response.write("Invalid API Key")
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
