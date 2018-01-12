@@ -22,23 +22,29 @@ import json
 # This will fix the pymobius requestor
 import requests
 import requests_toolbelt.adapters.appengine
-# Use the App Engine Requests adapter. This makes sure that Requests uses
-# URLFetch.
+# Use the App Engine Requests adapter. This makes sure that Requests uses URLFetch.
 requests_toolbelt.adapters.appengine.monkeypatch()
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
-        # Init the mobius object
-        mobius = Mobius(api_key=config.api_key)
-
-        # Get the user's email and the api-key
-        request_email = self.request.get_all("email")[0]
-        request_api_key = self.request.get_all("api_key")[0]
-        #request_email = self.request.get_all("email")[0].encode("utf-8")
-        #request_api_key = self.request.get_all("api_key")[0].encode("utf-8")
-
         # Prep the response
         self.response.headers['Content-Type'] = 'text/plain'
+
+        # Get the user's email and the api-key
+        request_email_params = self.request.get_all("email")
+        request_api_key_params = self.request.get_all("api_key")
+
+        # If there is no request_email or request_api_key, and request type is text/html
+        if request_email_params == [] or request_api_key_params == []:
+            error_msg = "USAGE: {}?email=EMAIL_TO_CHARGE&api_key=API_KEY_FOR_THIS_APP".format(self.request.url)
+            self.response.write(error_msg)
+            return
+
+        request_email = request_email_params[0]
+        request_api_key = request_api_key_params[0]
+
+        # Init the mobius object
+        mobius = Mobius(api_key=config.api_key)
 
         # Validate the api-key
         if (request_api_key == config.api_key):

@@ -1,0 +1,5 @@
+# WARNING: DO NOT STORE YOUR ACTUAL SECRETS IN GIT !!!
+# Copy this file to config.py and update it with your actual values
+#
+api_key = "INSERT_YOUR_API_KEY_HERE"
+uid = "INSERT_THE_APP_ID_FOR_YOUR_APP_HERE"
