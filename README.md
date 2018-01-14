@@ -1,19 +1,12 @@
-Notes
+Blog Post
 --------
-* https://console.developers.google.com
-* https://mobius.network/store/developer
-* https://mobius.network/docs/?python#app-store
-
-* https://github.com/zulucrypto/mobius-dapp-quickstart/blob/master/src/AppBundle/Controller/CoinFlipController.php
-
-* https://mobius-marcus-aurelius.appspot.com
-    * https://mobius-marcus-aurelius.appspot.com/static/marcus-aurelius.png
+* https://medium.com/@billzajac/mobius-with-python-and-google-appenine-68e0cf7e4060
 
 Install
 --------
 * https://cloud.google.com/appengine/docs/standard/python/tools/using-libraries-python-27
 ```
-# pip2 install --upgrade pip setuptools
+# pip2 install --upgrade pip setuptools # to upgrade pip
 pip2 install -t lib -r requirements.txt
 ```
 
@@ -25,6 +18,11 @@ dev_appserver.py .
 
 ```
 curl "localhost:8080?email=test@testing.com&api_key=YOUR_API_KEY"
+```
+
+* Example output
+```
+{"quote": "Everything we hear is an opinion, not a fact. Everything we see is a perspective, not the truth.", "num_credits": "4.0"}
 ```
 
 Deploy
@@ -42,3 +40,15 @@ curl -G "https://mobius.network/api/v1/app_store/balance" \
      -d "app_uid=APP_UID" \
      -d "email=EMAIL"
 ```
+
+Notes
+--------
+* https://console.developers.google.com
+* https://mobius.network/store/developer
+* https://mobius.network/docs/?python#app-store
+
+* https://github.com/zulucrypto/mobius-dapp-quickstart/blob/master/src/AppBundle/Controller/CoinFlipController.php
+
+* https://mobius-marcus-aurelius.appspot.com
+    * https://mobius-marcus-aurelius.appspot.com/static/marcus-aurelius.png
+
