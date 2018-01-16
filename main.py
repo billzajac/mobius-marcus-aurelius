@@ -53,10 +53,14 @@ class MainPage(webapp2.RequestHandler):
         mobius = Mobius(api_key=config.api_key)
 
         # Validate the api-key
-        if (request_api_key == config.api_key):
+        if request_api_key == config.api_key:
 
-            resp = mobius.app_store.use(app_uid=config.uid, email=request_email, num_credits=1)
-            #resp = mobius.app_store.balance(app_uid=config.uid, email=request_email)
+            try:
+                resp = mobius.app_store.use(app_uid=config.uid, email=request_email, num_credits=config.credits_to_charge)
+            except Exception as detail: 
+                self.response.write(detail)
+                self.response.write(" Possibly invalid email?")
+                return
 
             quote = "Not enough tokens"
 
@@ -65,6 +69,24 @@ class MainPage(webapp2.RequestHandler):
 
             to_write = {
                     "quote": quote,
+                    "charged_credits": config.credits_to_charge,
+                    "num_credits": resp["num_credits"]
+                    }
+
+            self.response.write(json.dumps(to_write))
+        elif request_api_key == config.test_api_key: 
+            resp = []
+            try:
+                resp = mobius.app_store.balance(app_uid=config.uid, email=request_email)
+            except Exception as detail: 
+                self.response.write(detail)
+                self.response.write(" Possibly invalid email?")
+                return
+
+	    quote = random.choice(meditations.quotes)
+            to_write = {
+                    "quote": quote,
+                    "charged_credits": "0.0",
                     "num_credits": resp["num_credits"]
                     }
 

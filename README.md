@@ -8,6 +8,9 @@ Install
 ```
 # pip2 install --upgrade pip setuptools # to upgrade pip
 pip2 install -t lib -r requirements.txt
+
+cp config.py.example to config.py
+vi config.py
 ```
 
 Test
@@ -16,13 +19,25 @@ Test
 dev_appserver.py .
 ```
 
+* Test without charging
+    * Note: This will not charge and will use the API call 'balance' instead of 'use'
+```
+curl "localhost:8080?email=test@testing.com&api_key=YOUR_TEST_API_KEY"
+```
+
+* Example output
+```
+{"quote": "Everything we hear is an opinion, not a fact. Everything we see is a perspective, not the truth.", "num_credits": "4.0", "charged_credits": "0.0"}
+```
+
+* Test with an actual charge
 ```
 curl "localhost:8080?email=test@testing.com&api_key=YOUR_API_KEY"
 ```
 
 * Example output
 ```
-{"quote": "Everything we hear is an opinion, not a fact. Everything we see is a perspective, not the truth.", "num_credits": "4.0"}
+{"quote": "Everything we hear is an opinion, not a fact. Everything we see is a perspective, not the truth.", "num_credits": "4.0", "charged_credits": "0.001"}
 ```
 
 Deploy
