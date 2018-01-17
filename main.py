@@ -95,5 +95,6 @@ class MainPage(webapp2.RequestHandler):
             self.response.write(json.dumps(to_write))
 
 app = webapp2.WSGIApplication([
-    ('/', MainPage),
+    ('/quote', MainPage),
+    ('/quote/', MainPage),
 ], debug=True)
