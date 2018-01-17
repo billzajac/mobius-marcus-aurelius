@@ -22,7 +22,7 @@ dev_appserver.py .
 * Test without charging
     * Note: This will not charge and will use the API call 'balance' instead of 'use'
 ```
-curl "localhost:8080?email=test@testing.com&api_key=YOUR_TEST_API_KEY"
+curl "localhost:8080?email=test@testing.com&test_key=YOUR_TEST_KEY"
 ```
 
 * Example output
@@ -32,7 +32,7 @@ curl "localhost:8080?email=test@testing.com&api_key=YOUR_TEST_API_KEY"
 
 * Test with an actual charge
 ```
-curl "localhost:8080?email=test@testing.com&api_key=YOUR_API_KEY"
+curl "localhost:8080?email=test@testing.com"
 ```
 
 * Example output

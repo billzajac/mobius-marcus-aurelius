@@ -36,25 +36,44 @@ class MainPage(webapp2.RequestHandler):
         # Prep the response
         self.response.headers['Content-Type'] = 'text/plain'
 
-        # Get the user's email and the api-key
+        # Get the user's email and optionally the test key
         request_email_params = self.request.get_all("email")
-        request_api_key_params = self.request.get_all("api_key")
+        request_test_key_params = self.request.get_all("test_key")
 
-        # If there is no request_email or request_api_key, and request type is text/html
-        if request_email_params == [] or request_api_key_params == []:
-            error_msg = "USAGE: {}?email=EMAIL_TO_CHARGE&api_key=API_KEY_FOR_THIS_APP".format(self.request.url)
+        # If there is no request_email
+        if request_email_params == []:
+            error_msg = "USAGE: {}?email=EMAIL_TO_CHARGE".format(self.request.url)
             self.response.write(error_msg)
             return
 
         request_email = request_email_params[0]
-        request_api_key = request_api_key_params[0]
+        request_test_key = ""
+        if len(request_test_key_params):
+            request_test_key = request_test_key_params[0]
 
         # Init the mobius object
         mobius = Mobius(api_key=config.api_key)
 
-        # Validate the api-key
-        if request_api_key == config.api_key:
+        # Did we get the test_key?
+        if request_test_key == config.test_key: 
+            resp = []
+            try:
+                resp = mobius.app_store.balance(app_uid=config.uid, email=request_email)
+            except Exception as detail: 
+                self.response.write(detail)
+                self.response.write(" Possibly invalid email?")
+                return
 
+	    # Always send the same quote for testing
+	    quote = "When you arise in the morning, think of what a precious privilege it is to be alive - to breathe, to think, to enjoy, to love."
+            to_write = {
+                    "quote": quote,
+                    "charged_credits": "0.0",
+                    "num_credits": resp["num_credits"]
+                    }
+
+            self.response.write(json.dumps(to_write))
+        else:
             try:
                 resp = mobius.app_store.use(app_uid=config.uid, email=request_email, num_credits=config.credits_to_charge)
             except Exception as detail: 
@@ -74,25 +93,6 @@ class MainPage(webapp2.RequestHandler):
                     }
 
             self.response.write(json.dumps(to_write))
-        elif request_api_key == config.test_api_key: 
-            resp = []
-            try:
-                resp = mobius.app_store.balance(app_uid=config.uid, email=request_email)
-            except Exception as detail: 
-                self.response.write(detail)
-                self.response.write(" Possibly invalid email?")
-                return
-
-	    quote = random.choice(meditations.quotes)
-            to_write = {
-                    "quote": quote,
-                    "charged_credits": "0.0",
-                    "num_credits": resp["num_credits"]
-                    }
-
-            self.response.write(json.dumps(to_write))
-        else:
-            self.response.write("Invalid API Key")
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
